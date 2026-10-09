@@ -1,0 +1,4 @@
+app_ami_id      = "ami-xxxxxxxxxxxxxxxxx"
+owner_email     = "you@example.com"
+route53_zone_id = "ZXXXXXXXXXXXXX"
+domain_name     = "example.com"

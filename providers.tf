@@ -3,9 +3,10 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Project     = "PETER-POC"
+      Project     = "peter-poc"
       Environment = "POC"
       ManagedBy   = "Terraform"
+      email       = var.owner_email
     }
   }
 }
