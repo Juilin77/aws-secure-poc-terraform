@@ -11,3 +11,6 @@ override.tf.json
 *_override.tf.json
 .terraformrc
 terraform.rc
+*.tfplan
+terraform-state-before-rebuild.json
+securityhub-*.json
