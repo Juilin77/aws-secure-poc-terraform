@@ -391,13 +391,28 @@ Before deployment:
 Example:
 
 ```powershell
-aws login --profile dos-poc
+aws login --profile peter-poc
 
-$env:AWS_PROFILE="dos-poc-tf"
+$env:AWS_PROFILE="peter-poc-tf"
 $env:AWS_REGION="ap-southeast-1"
 
 aws sts get-caller-identity
 ```
+
+## Configuration
+
+Copy the example variables file and set the required value:
+
+```bash
+cp terraform.tfvars.example terraform.tfvars
+```
+
+| Variable | Required | Description |
+|---|---|---|
+| `app_ami_id` | Yes | AMI ID for the application tier EC2 instance (no default) |
+| `aws_region`, `vpc_cidr`, subnet/AZ variables | No | Have defaults in `variables.tf`; override in `terraform.tfvars` only if needed |
+
+`terraform.tfvars` is gitignored and must never be committed.
 
 ## Terraform Deployment
 
