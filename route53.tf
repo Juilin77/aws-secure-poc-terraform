@@ -1,6 +1,6 @@
 resource "aws_route53_record" "poc_alb" {
-  zone_id = var.route53_zone_id
-  name    = var.domain_name
+  zone_id = "Z0916808EDFB6QNJTP1V"
+  name    = "poc.ipursuitlab.com"
   type    = "A"
 
   alias {

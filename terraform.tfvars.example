@@ -1,4 +1,16 @@
-app_ami_id      = "ami-xxxxxxxxxxxxxxxxx"
-owner_email     = "you@example.com"
-route53_zone_id = "ZXXXXXXXXXXXXX"
-domain_name     = "example.com"
+# Required - no default in variables.tf
+app_ami_id = "ami-xxxxxxxxxxxxxxxxx"
+
+# Optional overrides (all have defaults in variables.tf, uncomment to override)
+# aws_region                  = "ap-southeast-1"
+# vpc_cidr                    = "10.10.0.0/16"
+# public_subnet_cidr          = "10.10.1.0/24"
+# public_subnet_b_cidr        = "10.10.2.0/24"
+# private_subnet_cidr         = "10.10.11.0/24"
+# private_subnet_b_cidr       = "10.10.12.0/24"
+# availability_zone_a         = "ap-southeast-1a"
+# availability_zone_b         = "ap-southeast-1b"
+# firewall_subnet_a_cidr      = "10.10.21.0/28"
+# firewall_subnet_b_cidr      = "10.10.22.0/28"
+# nat_subnet_a_cidr           = "10.10.31.0/28"
+# forward_proxy_subnet_a_cidr = "10.10.41.0/28"

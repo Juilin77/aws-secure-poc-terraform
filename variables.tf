@@ -51,17 +51,26 @@ variable "app_ami_id" {
   type        = string
 }
 
-variable "owner_email" {
-  description = "Email address for alerts and resource tagging"
+variable "firewall_subnet_a_cidr" {
+  description = "CIDR block for Network Firewall subnet A"
   type        = string
+  default     = "10.10.21.0/28"
 }
 
-variable "route53_zone_id" {
-  description = "Route53 hosted zone ID for the domain"
+variable "firewall_subnet_b_cidr" {
+  description = "CIDR block for Network Firewall subnet B"
   type        = string
+  default     = "10.10.22.0/28"
 }
 
-variable "domain_name" {
-  description = "Domain name for the ALB/ACM certificate"
+variable "nat_subnet_a_cidr" {
+  description = "CIDR block for NAT instance subnet A"
   type        = string
+  default     = "10.10.31.0/28"
+}
+
+variable "forward_proxy_subnet_a_cidr" {
+  description = "CIDR block for Forward Proxy subnet A"
+  type        = string
+  default     = "10.10.41.0/28"
 }

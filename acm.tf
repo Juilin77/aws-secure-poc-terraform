@@ -1,5 +1,5 @@
 resource "aws_acm_certificate" "poc" {
-  domain_name       = var.domain_name
+  domain_name       = "poc.ipursuitlab.com"
   validation_method = "DNS"
 
   tags = {
@@ -21,7 +21,7 @@ resource "aws_route53_record" "acm_validation" {
     }
   }
 
-  zone_id = var.route53_zone_id
+  zone_id = "Z0916808EDFB6QNJTP1V"
   name    = each.value.name
   type    = each.value.type
   ttl     = 60

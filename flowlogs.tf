@@ -30,7 +30,7 @@ resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
 
   tags = {
     Name  = "peter-poc-vpc-flow-logs"
-    email = var.owner_email
+    email = "contact@example.com"
   }
 }
 
@@ -45,7 +45,7 @@ resource "aws_iam_role" "vpc_flow_logs" {
   #
   # Required by current account governance
   #
-  permissions_boundary = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:policy/PermissionsBoundary"
+  permissions_boundary = "arn:aws:iam::266170445194:policy/PermissionsBoundary"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -76,7 +76,7 @@ resource "aws_iam_role" "vpc_flow_logs" {
 
   tags = {
     Name  = "peter-poc-vpc-flow-logs-role"
-    email = var.owner_email
+    email = "contact@example.com"
   }
 }
 
@@ -188,7 +188,7 @@ resource "aws_flow_log" "vpc" {
 
   tags = {
     Name  = "peter-poc-vpc-flow-logs"
-    email = var.owner_email
+    email = "contact@example.com"
   }
 
   #

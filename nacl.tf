@@ -138,6 +138,62 @@ resource "aws_network_acl_rule" "private_in_https_public_b" {
   from_port      = 443
   to_port        = 443
 }
+resource "aws_network_acl_rule" "private_in_ephemeral_nat" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 120
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.nat_subnet_a_cidr
+  from_port      = 1024
+  to_port        = 65535
+}
+
+resource "aws_network_acl_rule" "private_in_ephemeral_forward_proxy" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 130
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.forward_proxy_subnet_a_cidr
+  from_port      = 1024
+  to_port        = 65535
+}
+
+resource "aws_network_acl_rule" "private_in_ephemeral_forward_proxy_traffic" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 140
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.forward_proxy_subnet_a_cidr
+  from_port      = 1024
+  to_port        = 65535
+}
+
+resource "aws_network_acl_rule" "private_in_mysql_from_a" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 150
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.private_subnet_cidr
+
+  from_port = 3306
+  to_port   = 3306
+}
+
+resource "aws_network_acl_rule" "private_in_ephemeral_from_b" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 160
+  egress         = false
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.private_subnet_b_cidr
+
+  from_port = 1024
+  to_port   = 65535
+}
 
 #
 # EICE and EC2 are currently in Private Subnet A.
@@ -173,6 +229,63 @@ resource "aws_network_acl_rule" "private_out_ephemeral_public_b" {
   cidr_block     = var.public_subnet_b_cidr
   from_port      = 1024
   to_port        = 65535
+}
+
+resource "aws_network_acl_rule" "private_out_ssh_nat" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 120
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.nat_subnet_a_cidr
+  from_port      = 22
+  to_port        = 22
+}
+
+resource "aws_network_acl_rule" "private_out_ssh_forward_proxy" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 130
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.forward_proxy_subnet_a_cidr
+  from_port      = 22
+  to_port        = 22
+}
+
+resource "aws_network_acl_rule" "private_out_forward_proxy" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 140
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.forward_proxy_subnet_a_cidr
+  from_port      = 3128
+  to_port        = 3128
+}
+
+resource "aws_network_acl_rule" "private_out_mysql_to_b" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 150
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.private_subnet_b_cidr
+
+  from_port = 3306
+  to_port   = 3306
+}
+
+resource "aws_network_acl_rule" "private_out_ephemeral_to_a" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 160
+  egress         = true
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = var.private_subnet_cidr
+
+  from_port = 1024
+  to_port   = 65535
 }
 
 #

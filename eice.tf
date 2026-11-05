@@ -11,6 +11,21 @@ resource "aws_security_group" "eice" {
     cidr_blocks = [var.private_subnet_cidr]
   }
 
+  egress {
+    description = "Allow SSH to NAT subnet"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.nat_subnet_a_cidr]
+  }
+
+  egress {
+    description = "Allow SSH to Forward Proxy subnet"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.forward_proxy_subnet_a_cidr]
+  }
   tags = {
     Name = "peter-poc-eice-sg"
   }

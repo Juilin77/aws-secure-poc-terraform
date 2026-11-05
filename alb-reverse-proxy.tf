@@ -34,7 +34,7 @@ resource "aws_security_group" "alb" {
 }
 
 resource "aws_lb" "main" {
-  name               = "peter-poc-alb"
+  name               = "alb-reverse-proxy"
   internal           = false
   load_balancer_type = "application"
 
@@ -93,7 +93,7 @@ resource "aws_lb_target_group" "app_https" {
 
 resource "aws_lb_target_group_attachment" "app_https" {
   target_group_arn = aws_lb_target_group.app_https.arn
-  target_id        = aws_instance.app.id
+  target_id        = aws_instance.reverse_proxy.id
   port             = 443
 }
 
