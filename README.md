@@ -2,6 +2,64 @@
 
 Terraform-based AWS infrastructure Proof of Concept (POC) demonstrating a security-focused multi-tier architecture with controlled ingress and egress, internal package repository services, database connectivity, Windows infrastructure services, monitoring, and repeatable Infrastructure as Code deployment.
 
+## Table of Contents
+
+- [AWS Services Used](#aws-services-used)
+- [Architecture Overview](#architecture-overview)
+- [Architecture Components](#architecture-components)
+- [Terraform File Structure](#terraform-file-structure)
+- [Network Design](#network-design)
+- [Application Architecture](#application-architecture)
+- [Database Tier](#database-tier)
+- [Internal Package Repository](#internal-package-repository)
+- [Forward Proxy](#forward-proxy)
+- [NAT Instance](#nat-instance)
+- [AWS Network Firewall](#aws-network-firewall)
+- [AWS WAF](#aws-waf)
+- [Security Groups](#security-groups)
+- [Network ACLs](#network-acls)
+- [Active Directory and WSUS](#active-directory-and-wsus)
+- [Monitoring and Logging](#monitoring-and-logging)
+- [IAM and Permission Constraints](#iam-and-permission-constraints)
+- [KMS Governance](#kms-governance)
+- [Planned Governance and Security Services](#planned-governance-and-security-services)
+- [Architecture Diagrams](#architecture-diagrams)
+- [Prerequisites](#prerequisites)
+- [Configuration](#configuration)
+- [Terraform Deployment](#terraform-deployment)
+- [Post-Deployment Validation](#post-deployment-validation)
+- [Destroy and Rebuild Validation](#destroy-and-rebuild-validation)
+- [Files That Must Not Be Committed](#files-that-must-not-be-committed)
+- [Recommended `.gitignore`](#recommended-gitignore)
+- [POC Security Notes](#poc-security-notes)
+- [Production Recommendations](#production-recommendations)
+- [Compliance Positioning](#compliance-positioning)
+- [Current Validation Status](#current-validation-status)
+- [Purpose](#purpose)
+
+## AWS Services Used
+
+| Service | Role in this POC |
+|---|---|
+| Amazon VPC | Network foundation: public/private/firewall/NAT/proxy subnets, route tables, Network ACLs |
+| Amazon EC2 | Reverse Proxy, Web, Application, Internal Repository, Forward Proxy, NAT, AD, WSUS instances |
+| Elastic Load Balancing (ALB) | Internet-facing, internal Web, and internal App Application Load Balancers |
+| AWS WAF | Layer 7 inspection in front of the Internet-facing ALB |
+| AWS Network Firewall | Stateful inspection inserted into both ingress and egress routing paths |
+| Amazon EC2 Instance Connect Endpoint (EICE) | Private, browser/CLI-based SSH and RDP access without public IPs or bastion hosts |
+| Amazon RDS (MySQL) | Private, encrypted database tier for the Application Tier |
+| AWS Secrets Manager | AD bootstrap/domain-join credentials and RDS master credentials |
+| AWS Certificate Manager (ACM) | TLS certificates for Application Load Balancers |
+| Amazon Route 53 | DNS for the POC domain |
+| Amazon CloudWatch | Alarms and log groups for infrastructure monitoring |
+| Amazon SNS | Alarm notification delivery |
+| VPC Flow Logs | Network-level traffic visibility across the VPC |
+| AWS IAM | Roles, instance profiles, and a mandatory permissions boundary for all created roles |
+| AWS Key Management Service (KMS) | Encryption for storage and Secrets Manager, using existing keys (new key creation is denied by policy) |
+| Terraform | Infrastructure as Code: provisioning, state management, and repeatable destroy/rebuild |
+
+Services evaluated and planned for a later phase (not yet implemented) are listed in [Planned Governance and Security Services](#planned-governance-and-security-services).
+
 ## Architecture Overview
 
 The POC implements a multi-tier AWS architecture with separate ingress and egress security paths.
@@ -70,9 +128,9 @@ Application workloads do not rely on unrestricted direct Internet access.
 
 The Forward Proxy provides explicit outbound proxy access, while the NAT instance performs source NAT before traffic passes through AWS Network Firewall.
 
-## Main AWS Components
+## Architecture Components
 
-The environment includes:
+Resource-level detail behind the [AWS Services Used](#aws-services-used) table above. The environment includes:
 
 - Amazon VPC
 - Public and private subnets
@@ -127,6 +185,7 @@ The environment includes:
 ├── iam.tf
 ├── nacl.tf
 ├── network-firewall.tf
+├── outputs.tf
 ├── providers.tf
 ├── rds.tf
 ├── route53.tf
@@ -136,6 +195,8 @@ The environment includes:
 ├── vpc-1.tf
 └── waf.tf
 ```
+
+`terraform.tfvars.example` documents required/optional input variables (see [Configuration](#configuration)) and is also committed.
 
 Terraform plan files, state files, local debug exports, and private keys are deployment artifacts and are not part of the Terraform source structure.
 
@@ -653,6 +714,12 @@ Planned purpose:
 - Recovery validation
 
 Backup configuration alone is insufficient; restore testing should be included in production-readiness evidence.
+
+## Architecture Diagrams
+
+Diagram sources and exported images live in [`diagrams/`](diagrams/) (`.drawio` source plus `.png` export for each view: `network`, `app`, `dns-edge`, `logging-monitoring-security`, `management`).
+
+The current diagrams predate the multi-tier ALB redesign (separate Reverse Proxy / Web / App ALBs, AD break-glass access) and are being updated to match; treat the [Architecture Overview](#architecture-overview) and [Application Architecture](#application-architecture) text diagrams above as the current source of truth until the images are refreshed.
 
 ## Prerequisites
 
