@@ -30,7 +30,7 @@ resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
 
   tags = {
     Name  = "peter-poc-vpc-flow-logs"
-    email = "contact@example.com"
+    email = var.contact_email
   }
 }
 
@@ -76,7 +76,7 @@ resource "aws_iam_role" "vpc_flow_logs" {
 
   tags = {
     Name  = "peter-poc-vpc-flow-logs-role"
-    email = "contact@example.com"
+    email = var.contact_email
   }
 }
 
@@ -188,7 +188,7 @@ resource "aws_flow_log" "vpc" {
 
   tags = {
     Name  = "peter-poc-vpc-flow-logs"
-    email = "contact@example.com"
+    email = var.contact_email
   }
 
   #

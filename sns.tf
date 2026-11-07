@@ -17,7 +17,7 @@ resource "aws_sns_topic" "poc_alerts" {
 resource "aws_sns_topic_subscription" "poc_alerts_email" {
   topic_arn = aws_sns_topic.poc_alerts.arn
   protocol  = "email"
-  endpoint  = "contact@example.com"
+  endpoint  = var.contact_email
 }
 
 ############################################

@@ -6,7 +6,7 @@ provider "aws" {
       Project     = "peter-poc"
       Environment = "POC"
       ManagedBy   = "Terraform"
-      email       = "contact@example.com"
+      email       = var.contact_email
     }
   }
 }

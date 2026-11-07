@@ -56,6 +56,11 @@ variable "permissions_boundary_arn" {
   type        = string
 }
 
+variable "contact_email" {
+  description = "Contact email used for resource tagging and the SNS alert subscription"
+  type        = string
+}
+
 variable "firewall_subnet_a_cidr" {
   description = "CIDR block for Network Firewall subnet A"
   type        = string

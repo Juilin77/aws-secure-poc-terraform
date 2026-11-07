@@ -756,6 +756,7 @@ cp terraform.tfvars.example terraform.tfvars
 |---|---|---|
 | `app_ami_id` | Yes | AMI ID for the application tier EC2 instance (no default) |
 | `permissions_boundary_arn` | Yes | IAM permissions boundary policy ARN required by the target AWS account (no default) |
+| `contact_email` | Yes | Contact email for resource tagging and the SNS alert subscription (no default) |
 | `aws_region`, `vpc_cidr`, subnet/AZ variables | No | Have defaults in `variables.tf`; override in `terraform.tfvars` only if needed |
 
 `terraform.tfvars` is gitignored and must never be committed.
