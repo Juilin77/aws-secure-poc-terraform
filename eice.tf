@@ -26,6 +26,15 @@ resource "aws_security_group" "eice" {
     protocol    = "tcp"
     cidr_blocks = [var.forward_proxy_subnet_a_cidr]
   }
+
+  egress {
+    description = "Allow RDP to Windows servers in private subnet A"
+    from_port   = 3389
+    to_port     = 3389
+    protocol    = "tcp"
+    cidr_blocks = [var.private_subnet_cidr]
+  }
+
   tags = {
     Name = "peter-poc-eice-sg"
   }

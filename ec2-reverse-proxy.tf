@@ -21,7 +21,7 @@ resource "aws_security_group" "reverse_proxy" {
     from_port       = 443
     to_port         = 443
     protocol        = "tcp"
-    security_groups = [aws_security_group.alb.id]
+    security_groups = [aws_security_group.alb_reverse_proxy.id]
   }
 
   ##########################################

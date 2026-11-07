@@ -96,6 +96,30 @@ resource "aws_security_group" "forward_proxy" {
   }
 
   ##########################################
+  # Windows Servers -> Forward Proxy
+  #
+  # AD is in Private Subnet A.
+  # WSUS is in Private Subnet B.
+  #
+  # CIDRs are used here to avoid Terraform
+  # dependency cycles between EC2 instances
+  # and inline Security Group rules.
+  ##########################################
+
+  ingress {
+    description = "Allow proxy access from private Windows servers"
+    from_port   = 3128
+    to_port     = 3128
+    protocol    = "tcp"
+
+    cidr_blocks = [
+      var.private_subnet_cidr,
+      var.private_subnet_b_cidr
+    ]
+  }
+
+
+  ##########################################
   # EICE -> SSH
   ##########################################
 

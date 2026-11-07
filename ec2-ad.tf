@@ -250,6 +250,8 @@ resource "aws_instance" "ad" {
   ami           = data.aws_ssm_parameter.windows_server_2022_ami.value
   instance_type = "t3.medium"
 
+  key_name = "peter-poc-ad-breakglass"
+
   subnet_id = aws_subnet.private_a.id
 
   vpc_security_group_ids = [
@@ -278,7 +280,6 @@ resource "aws_instance" "ad" {
 
               $ErrorActionPreference = "Stop"
 
-
               ############################################
               # Peter POC - AD01 Bootstrap
               ############################################
@@ -289,7 +290,7 @@ resource "aws_instance" "ad" {
 
               $DsrmSecretId       = "peter-poc/ad/bootstrap"
               $DomainJoinSecretId = "peter-poc/ad/domain-join"
-
+              
               $Region = "ap-southeast-1"
 
               $ProxyIP   = "${aws_instance.forward_proxy.private_ip}"
@@ -394,6 +395,17 @@ resource "aws_instance" "ad" {
               Write-POCLog `
                 "AD bootstrap started."
 
+
+              ############################################
+              # Configure Break-glass Local Administrator
+              ############################################
+
+              Write-POCLog `
+                "Configuring break-glass local Administrator credential."
+
+              Wait-POCForwardProxy
+
+              Set-POCAWSProxy
 
               ############################################
               # Already Completed
@@ -527,8 +539,9 @@ resource "aws_instance" "ad" {
                         "AD bootstrap SecretString is empty."
                   }
 
-                  $Secret = $SecretResponse.SecretString |
-                    ConvertFrom-Json
+                  $Secret = `
+                    $SecretResponse.SecretString |
+                      ConvertFrom-Json
 
                   if (
                       [string]::IsNullOrWhiteSpace(
@@ -751,10 +764,9 @@ resource "aws_instance" "ad" {
               Write-POCLog `
                 "Retrieving domain join credential."
 
-              $DomainJoinResponse = `
-                Get-SECSecretValue `
-                  -SecretId $DomainJoinSecretId `
-                  -Region $Region
+              $DomainJoinResponse = Get-SECSecretValue `
+                -SecretId $DomainJoinSecretId `
+                -Region $Region
 
               if (
                   [string]::IsNullOrWhiteSpace(
@@ -834,23 +846,12 @@ resource "aws_instance" "ad" {
 
 
               ############################################
-              # Final AD Validation
+              # Final Validation
               ############################################
-
-              $Domain = Get-ADDomain `
-                -Identity $DomainName `
-                -ErrorAction Stop
-
-              if (
-                  $Domain.DNSRoot -ne $DomainName
-              ) {
-
-                  throw `
-                    "Final AD domain validation failed."
-              }
 
               $Administrator = Get-ADUser `
                 -Identity "Administrator" `
+                -Properties Enabled `
                 -ErrorAction Stop
 
               if (
@@ -882,7 +883,6 @@ resource "aws_instance" "ad" {
               <powershellArguments>
               -ExecutionPolicy Bypass -NoProfile -NonInteractive
               </powershellArguments>
-
               EOF
 
   tags = {
@@ -941,8 +941,10 @@ resource "aws_iam_role_policy" "ad_secret_read" {
           data.aws_secretsmanager_secret.ad_bootstrap.arn,
           data.aws_secretsmanager_secret.ad_domain_join.arn
         ]
+
       }
     ]
+
   })
 }
 
@@ -969,7 +971,7 @@ resource "aws_iam_role" "ad" {
     ]
   })
 
-  permissions_boundary = "arn:aws:iam::266170445194:policy/PermissionsBoundary"
+  permissions_boundary = var.permissions_boundary_arn
 
   tags = {
     Name = "peter-poc-ad-role"

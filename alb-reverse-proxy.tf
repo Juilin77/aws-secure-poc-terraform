@@ -1,6 +1,10 @@
-resource "aws_security_group" "alb" {
-  name        = "peter-poc-alb-sg"
-  description = "Security group for Peter POC Application Load Balancer"
+##########################################
+# ALB-reverse-proxy Security Group
+##########################################
+
+resource "aws_security_group" "alb_reverse_proxy" {
+  name        = "alb-reverse-proxy-sg"
+  description = "Security group for Peter POC internet-facing reverse proxy ALB"
   vpc_id      = aws_vpc.main.id
 
   ingress {
@@ -19,9 +23,8 @@ resource "aws_security_group" "alb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-
   egress {
-    description = "Allow HTTPS to application targets"
+    description = "Allow HTTPS to reverse proxy targets"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
@@ -29,9 +32,13 @@ resource "aws_security_group" "alb" {
   }
 
   tags = {
-    Name = "peter-poc-alb-sg"
+    Name = "alb-reverse-proxy-sg"
   }
 }
+
+##########################################
+# Internal ALB-reverse-proxy
+##########################################
 
 resource "aws_lb" "main" {
   name               = "alb-reverse-proxy"
@@ -39,7 +46,7 @@ resource "aws_lb" "main" {
   load_balancer_type = "application"
 
   security_groups = [
-    aws_security_group.alb.id
+    aws_security_group.alb_reverse_proxy.id
   ]
 
   subnets = [
@@ -131,4 +138,12 @@ resource "aws_lb_listener" "https" {
     type             = "forward"
     target_group_arn = aws_lb_target_group.app_https.arn
   }
+}
+
+output "alb_reverse_proxy_dns_name" {
+  value = aws_lb.main.dns_name
+}
+
+output "alb_reverse_proxy_target_group_arn" {
+  value = aws_lb_target_group.app_https.arn
 }

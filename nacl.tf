@@ -301,3 +301,50 @@ resource "aws_network_acl_association" "private_b" {
   network_acl_id = aws_network_acl.private.id
   subnet_id      = aws_subnet.private_b.id
 }
+
+############################################
+# Private Subnet A <-> Private Subnet B
+#
+# POC design:
+# Allow east-west traffic between the two
+# private subnets at NACL level.
+#
+# Security Groups remain the primary
+# stateful workload-level control.
+############################################
+
+resource "aws_network_acl_rule" "private_in_from_private_a" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 170
+  egress         = false
+  protocol       = "-1"
+  rule_action    = "allow"
+  cidr_block     = var.private_subnet_cidr
+}
+
+resource "aws_network_acl_rule" "private_in_from_private_b" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 180
+  egress         = false
+  protocol       = "-1"
+  rule_action    = "allow"
+  cidr_block     = var.private_subnet_b_cidr
+}
+
+resource "aws_network_acl_rule" "private_out_to_private_a" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 170
+  egress         = true
+  protocol       = "-1"
+  rule_action    = "allow"
+  cidr_block     = var.private_subnet_cidr
+}
+
+resource "aws_network_acl_rule" "private_out_to_private_b" {
+  network_acl_id = aws_network_acl.private.id
+  rule_number    = 180
+  egress         = true
+  protocol       = "-1"
+  rule_action    = "allow"
+  cidr_block     = var.private_subnet_b_cidr
+}

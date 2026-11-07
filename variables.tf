@@ -51,6 +51,11 @@ variable "app_ami_id" {
   type        = string
 }
 
+variable "permissions_boundary_arn" {
+  description = "IAM permissions boundary policy ARN required by the target AWS account for IAM roles created by this POC"
+  type        = string
+}
+
 variable "firewall_subnet_a_cidr" {
   description = "CIDR block for Network Firewall subnet A"
   type        = string

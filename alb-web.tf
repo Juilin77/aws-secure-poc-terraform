@@ -18,7 +18,7 @@
 
 resource "aws_security_group" "alb_web" {
   name        = "alb-web-sg"
-  description = "Security Group for internal Web Tier ALB"
+  description = "Security group for Peter POC internal Web ALB"
   vpc_id      = aws_vpc.main.id
 
   ################################

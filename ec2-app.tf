@@ -77,7 +77,7 @@ resource "aws_security_group" "app" {
   }
 
   tags = {
-    Name = "peter-poc-ec2-private-sg"
+    Name = "peter-poc-app-sg"
   }
 }
 
@@ -253,5 +253,6 @@ resource "aws_instance" "app" {
 
   tags = {
     Name = "peter-poc-app-01"
+    Tier = "App"
   }
 }

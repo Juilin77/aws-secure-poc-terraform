@@ -879,7 +879,7 @@ resource "aws_iam_role" "wsus" {
     ]
   })
 
-  permissions_boundary = "arn:aws:iam::266170445194:policy/PermissionsBoundary"
+  permissions_boundary = var.permissions_boundary_arn
 
   tags = {
     Name = "peter-poc-wsus-role"
