@@ -1,0 +1,38 @@
+# Terraform working files
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+tfplan
+crash.log
+crash.*.log
+terraform-state-before-rebuild.json
+
+# Variables (may contain environment-specific values)
+*.tfvars
+*.tfvars.json
+!terraform.tfvars.example
+
+# Overrides / CLI config
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# Secrets, keys and certificates (local deployment inputs only)
+*.pem
+*.key
+*.p12
+*.pfx
+repo-server.crt
+.aws/
+
+# Operator notes and exported findings
+Noted.txt
+securityhub-*.json
+
+# OS files
+.DS_Store
+Thumbs.db
